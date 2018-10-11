@@ -16,4 +16,4 @@ This is server and client examples for secureserver
 
 ## run client example
 
-* go run client/main.go rsa /tmp/key
+* go run client/main.go /tmp/key
