@@ -1,7 +1,7 @@
 package secure
 
 import (
-	"./crypt"
+	"github.com/stuarthu/secureserver/crypt"
 	"net/http"
 	"strconv"
 )
