@@ -1,7 +1,7 @@
 package main
 
 import (
-	"../../../secureserver"
+	"github.com/stuarthu/secureserver"
 	"log"
 	"net/http"
 )

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"../../../secureserver"
-	"../../crypt"
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
+	"encoding/pem"
 	"fmt"
+	"github.com/stuarthu/secureserver"
+	"github.com/stuarthu/secureserver/crypt"
 	"io"
 	"net/http"
 	"os"
@@ -17,8 +15,7 @@ func main() {
 	if e != nil {
 		panic(e)
 	}
-	private, _ := rsa.GenerateKey(rand.Reader, 2048)
-	key := string(x509.MarshalPKCS1PrivateKey(private))
+	key := decodeRSAPrivateKeyFromFile(os.Args[1])
 	c := secure.NewClient(crypt.TypeRSA, key)
 	resp, e := c.Do(req)
 	if e != nil {
@@ -28,4 +25,18 @@ func main() {
 		fmt.Println(resp.StatusCode)
 	}
 	io.Copy(os.Stdout, resp.Body)
+}
+
+func decodeRSAPrivateKeyFromFile(file string) string {
+	f, e := os.Open(file)
+	if e != nil {
+		panic(e)
+	}
+	b := make([]byte, 5000)
+	io.ReadFull(f, b)
+	block, _ := pem.Decode(b)
+	if block == nil {
+		panic(e)
+	}
+	return string(block.Bytes)
 }
