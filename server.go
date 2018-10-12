@@ -1,24 +1,21 @@
 package secure
 
 import (
-	"github.com/stuarthu/secureserver/crypt"
+	"./crypt"
+	//"github.com/stuarthu/secureserver/crypt"
 	"log"
 	"net/http"
 	"strconv"
 )
 
-type server struct {
+type Server struct {
 	http.Handler
 }
 
-func Server(handler http.Handler) http.Handler {
-	return &server{handler}
-}
-
-func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t := r.Header.Get("secure-type")
 	if t == "" {
-		http.Error(w, "must provide secure-type header", http.StatusUnauthorized)
+		s.Handler.ServeHTTP(w, r)
 		return
 	}
 	k := r.Header.Get("secure-publickey")
@@ -37,13 +34,14 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid secure-messagesize header", http.StatusBadRequest)
 		return
 	}
-	w2, e := crypt.NewEncryptedResponseWriter(t, k, size, w)
+	w2, e := crypt.NewEncryptedWriter(t, k, size, w)
 	if e != nil {
 		log.Println(e)
 		http.Error(w, e.Error(), http.StatusBadRequest)
 		return
 	}
+	w2.Header().Set("secure-type", t)
 	s.Handler.ServeHTTP(w2, r)
-	w2.(http.Flusher).Flush()
+	w2.Flush()
 	return
 }

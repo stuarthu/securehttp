@@ -49,9 +49,12 @@ func TestCrypt(t *testing.T) {
 }
 
 func testCrypt(t *testing.T, typ, privateKey string) {
-	d := NewDecryptor(typ, privateKey)
+	d, e := NewDecryptor(typ, privateKey)
+	if e != nil {
+		t.Fatal(e)
+	}
 	w := &dummy{}
-	w2, e := NewEncryptedResponseWriter(d.Type(), d.PublicKey(), d.MessageSize(), w)
+	w2, e := NewEncryptedWriter(d.Type(), d.PublicKey(), d.MessageSize(), w)
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -59,7 +62,7 @@ func testCrypt(t *testing.T, typ, privateKey string) {
 	w2.Write(input)
 	w2.(http.Flusher).Flush()
 
-	r := d.NewReader(w)
+	r := d.NewDecryptedReader(w)
 	b := make([]byte, 5000)
 	length, e := r.Read(b)
 	if e != nil {

@@ -44,7 +44,7 @@ func (w *rsaWriter) Flush() {
 	w.writeData(w.cache)
 }
 
-func NewRSAWriter(key string, size int, w http.ResponseWriter) (http.ResponseWriter, error) {
+func NewRSAWriter(key string, size int, w http.ResponseWriter) (EncryptedWriter, error) {
 	b, e := base64.URLEncoding.DecodeString(key)
 	if e != nil {
 		return nil, e
@@ -136,14 +136,14 @@ func (r *rsaReadCloser) Read(b []byte) (int, error) {
 	return length, nil
 }
 
-func (c *rsaDecryptor) NewReader(r io.ReadCloser) io.ReadCloser {
+func (c *rsaDecryptor) NewDecryptedReader(r io.ReadCloser) io.ReadCloser {
 	return &rsaReadCloser{r, c, nil, nil}
 }
 
-func NewRSA(key string) Decryptor {
+func NewRSA(key string) (Decryptor, error) {
 	privateKey, e := x509.ParsePKCS1PrivateKey([]byte(key))
 	if e != nil {
-		panic(e)
+		return nil, e
 	}
-	return &rsaDecryptor{privateKey}
+	return &rsaDecryptor{privateKey}, nil
 }

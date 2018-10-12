@@ -13,7 +13,7 @@ func (w *nocryptWriter) Flush() {
 	return
 }
 
-func NewNocryptWriter(key string, size int, w http.ResponseWriter) (http.ResponseWriter, error) {
+func NewNocryptWriter(key string, size int, w http.ResponseWriter) (EncryptedWriter, error) {
 	return &nocryptWriter{w}, nil
 }
 
@@ -33,7 +33,7 @@ func (c *nocrypt) MessageSize() int {
 	return 0
 }
 
-func (c *nocrypt) NewReader(r io.ReadCloser) io.ReadCloser {
+func (c *nocrypt) NewDecryptedReader(r io.ReadCloser) io.ReadCloser {
 	return r
 }
 
