@@ -4,20 +4,19 @@ import (
 	"encoding/pem"
 	"fmt"
 	"github.com/stuarthu/secureserver"
-	"github.com/stuarthu/secureserver/crypt"
 	"io"
 	"net/http"
 	"os"
 )
 
 func main() {
-	req, e := http.NewRequest("GET", "http://localhost:8000", nil)
+	key := decodeRSAPrivateKeyFromFile(os.Args[1])
+	d, e := securehttp.NewDecryptor(securehttp.TypeRSA, key)
 	if e != nil {
 		panic(e)
 	}
-	key := decodeRSAPrivateKeyFromFile(os.Args[1])
-	c := secure.NewClient(crypt.TypeRSA, key)
-	resp, e := c.Do(req)
+	c := &securehttp.Client{d, &http.Client{}}
+	resp, e := c.Get("http://localhost:8000")
 	if e != nil {
 		panic(e)
 	}

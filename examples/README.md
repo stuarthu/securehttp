@@ -4,7 +4,7 @@ This is server and client examples for secureserver
 
 ## go get secureserver from github
 
-* go get github.com/stuarthu/secureserver
+* go get -u github.com/stuarthu/secureserver
 
 ## run server example
 
