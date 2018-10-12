@@ -1,10 +1,10 @@
-# secureserver examples
+# securehttp examples
 
-This is server and client examples for secureserver
+This is server and client examples for securehttp
 
-## go get secureserver from github
+## go get securehttp from github
 
-* go get -u github.com/stuarthu/secureserver
+* go get -u github.com/stuarthu/securehttp
 
 ## run server example
 

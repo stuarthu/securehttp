@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/pem"
 	"fmt"
-	"github.com/stuarthu/secureserver"
+	"github.com/stuarthu/securehttp"
 	"io"
 	"net/http"
 	"os"
