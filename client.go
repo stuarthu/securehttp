@@ -1,13 +1,12 @@
-package secure
+package securehttp
 
 import (
-	"github.com/stuarthu/secureserver/crypt"
 	"net/http"
 	"strconv"
 )
 
 type Client struct {
-	crypt.Decryptor
+	Decryptor
 	*http.Client
 }
 

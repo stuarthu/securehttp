@@ -1,7 +1,6 @@
-package secure
+package securehttp
 
 import (
-	"./crypt"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -24,7 +23,7 @@ func createServer(isSecure bool) *httptest.Server {
 }
 
 func testClient(t *testing.T, typ, privateKey string, ts *httptest.Server) {
-	d, e := crypt.NewDecryptor(typ, privateKey)
+	d, e := NewDecryptor(typ, privateKey)
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -44,19 +43,19 @@ func testClient(t *testing.T, typ, privateKey string, ts *httptest.Server) {
 }
 
 func testClientsOnServer(t *testing.T, ts *httptest.Server) {
-	testClient(t, crypt.TypeNocrypt, "nokey", ts)
+	testClient(t, TypeNocrypt, "nokey", ts)
 
 	private, _ := rsa.GenerateKey(rand.Reader, 2048)
 	key := string(x509.MarshalPKCS1PrivateKey(private))
-	testClient(t, crypt.TypeRSA, key, ts)
+	testClient(t, TypeRSA, key, ts)
 
 	private, _ = rsa.GenerateKey(rand.Reader, 1024)
 	key = string(x509.MarshalPKCS1PrivateKey(private))
-	testClient(t, crypt.TypeRSA, key, ts)
+	testClient(t, TypeRSA, key, ts)
 
 	private, _ = rsa.GenerateKey(rand.Reader, 512)
 	key = string(x509.MarshalPKCS1PrivateKey(private))
-	testClient(t, crypt.TypeRSA, key, ts)
+	testClient(t, TypeRSA, key, ts)
 }
 
 func TestClient(t *testing.T) {

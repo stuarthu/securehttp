@@ -1,4 +1,4 @@
-package crypt
+package securehttp
 
 import (
 	"crypto/rand"

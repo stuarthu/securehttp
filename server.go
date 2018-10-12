@@ -1,7 +1,6 @@
-package secure
+package securehttp
 
 import (
-	"github.com/stuarthu/secureserver/crypt"
 	"log"
 	"net/http"
 	"strconv"
@@ -33,7 +32,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid secure-messagesize header", http.StatusBadRequest)
 		return
 	}
-	w2, e := crypt.NewEncryptedWriter(t, k, size, w)
+	w2, e := NewEncryptedWriter(t, k, size, w)
 	if e != nil {
 		log.Println(e)
 		http.Error(w, e.Error(), http.StatusBadRequest)
